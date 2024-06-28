@@ -1,10 +1,11 @@
 const Movie = require('../models/movie.model')
+const Showtime = require('../models/showtime.model')
 
 const getMovies = async (req, res) => {
 	try {
 		const kidsMovies = await Movie.find({ ageRating: 'KIDS' })
 			.limit(10)
-			.select('id title imgUrl')
+			.select('id title genre productionYear duration imgUrl')
 			.exec()
 
 		const generalMovies = await Movie.find({ ageRating: { $ne: 'KIDS' } })
@@ -12,9 +13,24 @@ const getMovies = async (req, res) => {
 			.select('title genre releaseDate imgUrl')
 			.exec()
 
-		const top5Movies = await Movie.find({})
-			.limit(5)
-			.select('title genre releaseData imgUrl')
+		const top5Movies = await Movie.find({}).limit(5).select('title genre releaseData imgUrl').exec()
+
+		const dateToday = new Date()
+		dateToday.setHours(0, 0, 0, 0)
+
+		const dateTomorrow = new Date(dateToday)
+		dateTomorrow.setDate(dateToday.getDate() + 1)
+
+		const ShowtimeToday = await Showtime.find({
+			date: { $gte: dateToday },
+		})
+			.populate('movie', 'title imgUrl genre productionYear duration')
+			.exec()
+
+		const ShowtimeTomorrow = await Showtime.find({
+			date: { $gte: dateTomorrow },
+		})
+			.populate('movie', 'title imgUrl genre productionYear duration')
 			.exec()
 
 		const response = {
@@ -22,11 +38,16 @@ const getMovies = async (req, res) => {
 				id: movie.id,
 				title: movie.title,
 				imgUrl: movie.imgUrl,
+				productionYear: movie.productionYear,
+				duration: movie.duration,
+				genre: movie.genre,
 			})),
 			generalRepertoire: generalMovies.map(movie => ({
 				id: movie.id,
 				title: movie.title,
 				genre: movie.genre,
+				productionYear: movie.productionYear,
+
 				releaseDate: movie.releaseDate,
 				imgUrl: movie.imgUrl,
 			})),
@@ -37,6 +58,16 @@ const getMovies = async (req, res) => {
 				releaseDate: movie.releaseDate,
 				imgUrl: movie.imgUrl,
 			})),
+			showtime: {
+				today: ShowtimeToday.map(showtime => ({
+					_id: showtime._id,
+					...showtime.movie.toObject(),
+				})),
+				tomorrow: ShowtimeTomorrow.map(showtime => ({
+					_id: showtime._id,
+					...showtime.movie.toObject(),
+				})),
+			},
 		}
 
 		res.json(response)

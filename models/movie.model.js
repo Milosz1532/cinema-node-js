@@ -9,8 +9,8 @@ const movieSchema = new Schema(
 		genre: { type: String, required: true },
 		director: { type: String, required: true },
 		cast: [actorSchema],
-		releaseDate: { type: Date, required: true },
-		duration: { type: Number, required: true }, // in minutes
+		productionYear: { type: Number, required: true },
+		duration: { type: Number, required: true },
 		imgUrl: { type: String, required: true },
 		bannerUrl: { type: String, required: true },
 		ageRating: { type: String, required: true },

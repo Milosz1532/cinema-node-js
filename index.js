@@ -11,6 +11,8 @@ app.use('/images', express.static(path.join(__dirname, 'public', 'images')))
 //========= Import routes =========//
 const moviesRouter = require('./routes/movie.route')
 const homeRouter = require('./routes/home.route')
+const showtimeRouter = require('./routes/showtime.route')
+const screenRouter = require('./routes/screen.route')
 
 //========= Middleware =========//
 app.use(express.json())
@@ -23,6 +25,8 @@ app.use(
 //========= Define routes =========//
 app.use('/api/movies', moviesRouter)
 app.use('/api/home', homeRouter)
+app.use('/api/showtime', showtimeRouter)
+app.use('/api/screen', screenRouter)
 
 connectDB()
 	.then(() => {
