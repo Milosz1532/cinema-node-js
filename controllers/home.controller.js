@@ -47,7 +47,6 @@ const getMovies = async (req, res) => {
 				title: movie.title,
 				genre: movie.genre,
 				productionYear: movie.productionYear,
-
 				releaseDate: movie.releaseDate,
 				imgUrl: movie.imgUrl,
 			})),
@@ -61,10 +60,12 @@ const getMovies = async (req, res) => {
 			showtime: {
 				today: ShowtimeToday.map(showtime => ({
 					_id: showtime._id,
+					movieId: showtime.movie.id,
 					...showtime.movie.toObject(),
 				})),
 				tomorrow: ShowtimeTomorrow.map(showtime => ({
 					_id: showtime._id,
+					movieId: showtime.movie.id,
 					...showtime.movie.toObject(),
 				})),
 			},
