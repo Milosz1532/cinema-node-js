@@ -9,6 +9,7 @@ const cors = require('cors')
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')))
 
 //========= Import routes =========//
+const actorRouter = require('./routes/actor.route')
 const moviesRouter = require('./routes/movie.route')
 const homeRouter = require('./routes/home.route')
 const showtimeRouter = require('./routes/showtime.route')
@@ -23,6 +24,7 @@ app.use(
 )
 
 //========= Define routes =========//
+app.use('/api/actors', actorRouter)
 app.use('/api/movies', moviesRouter)
 app.use('/api/home', homeRouter)
 app.use('/api/showtime', showtimeRouter)

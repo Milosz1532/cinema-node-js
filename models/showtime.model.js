@@ -7,6 +7,8 @@ const showtimeSchema = new Schema(
 		screen: { type: Schema.Types.ObjectId, ref: 'Screen', required: true },
 		date: { type: Date, required: true },
 		time: { type: String, required: true },
+		language: { type: String, required: true },
+		movieType: { type: String, required: true },
 	},
 	{
 		timestamps: true,

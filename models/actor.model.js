@@ -3,7 +3,8 @@ const Schema = mongoose.Schema
 
 const actorSchema = new Schema({
 	name: { type: String, required: true },
-	role: { type: String },
+	imgUrl: { type: String },
 })
 
-module.exports = actorSchema
+const Actor = mongoose.model('Actor', actorSchema)
+module.exports = Actor
