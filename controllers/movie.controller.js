@@ -31,7 +31,7 @@ const getMovieById = async (req, res) => {
 		}
 
 		const transformedCast = movie.cast.map(castMember => ({
-			actor_id: castMember.actor._id,
+			id: castMember.actor._id,
 			name: castMember.actor.name,
 			imgUrl: castMember.actor.imgUrl,
 			characterName: castMember.characterName,
@@ -39,7 +39,7 @@ const getMovieById = async (req, res) => {
 
 		const otherMovies = await Movie.find({})
 			.limit(5)
-			.select('title genre releaseData imgUrl')
+			.select('title genre productionYear duration releaseData imgUrl')
 			.exec()
 
 		const showtimes = await Showtime.find({ movie: id })
@@ -66,7 +66,10 @@ const getMovieById = async (req, res) => {
 				title: movie.title,
 				genre: movie.genre,
 				releaseDate: movie.releaseDate,
+				productionYear: movie.productionYear,
+				genre: movie.genre,
 				imgUrl: movie.imgUrl,
+				duration: movie.duration,
 			})),
 		}
 
