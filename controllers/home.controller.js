@@ -5,15 +5,18 @@ const getMovies = async (req, res) => {
 	try {
 		const kidsMovies = await Movie.find({ ageRating: 'KIDS' })
 			.limit(10)
-			.select('id title genre productionYear duration imgUrl')
+			.select('_id title genre productionYear duration imgUrl')
 			.exec()
 
 		const generalMovies = await Movie.find({ ageRating: { $ne: 'KIDS' } })
 			.limit(10)
-			.select('title genre releaseDate imgUrl')
+			.select('_id title genre releaseDate imgUrl')
 			.exec()
 
-		const top5Movies = await Movie.find({}).limit(5).select('title genre releaseData imgUrl').exec()
+		const top5Movies = await Movie.find({})
+			.limit(5)
+			.select('_id title genre releaseData imgUrl')
+			.exec()
 
 		const dateToday = new Date()
 		dateToday.setHours(0, 0, 0, 0)
@@ -35,7 +38,7 @@ const getMovies = async (req, res) => {
 
 		const response = {
 			kidsRepertoire: kidsMovies.map(movie => ({
-				id: movie.id,
+				id: movie._id,
 				title: movie.title,
 				imgUrl: movie.imgUrl,
 				productionYear: movie.productionYear,
@@ -43,7 +46,7 @@ const getMovies = async (req, res) => {
 				genre: movie.genre,
 			})),
 			generalRepertoire: generalMovies.map(movie => ({
-				id: movie.id,
+				id: movie._id,
 				title: movie.title,
 				genre: movie.genre,
 				productionYear: movie.productionYear,
@@ -51,7 +54,7 @@ const getMovies = async (req, res) => {
 				imgUrl: movie.imgUrl,
 			})),
 			top5Movies: top5Movies.map(movie => ({
-				id: movie.id,
+				id: movie._id,
 				title: movie.title,
 				genre: movie.genre,
 				releaseDate: movie.releaseDate,
