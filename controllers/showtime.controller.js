@@ -14,6 +14,43 @@ const getAllShowtimes = async (req, res) => {
 	}
 }
 
+const getShowtimeById = async (req, res) => {
+	const { id } = req.params
+	try {
+		const showtime = await Showtime.findById(id).populate('movie screen')
+		if (!showtime) {
+			return res.status(404).json({ message: 'Showtime not found' })
+		}
+
+		const formatedShowtime = {
+			id: showtime._id,
+			date: showtime.date,
+			time: showtime.time,
+			language: showtime.language,
+			movieType: showtime.movieType,
+			movie: {
+				id: showtime.movie._id,
+				title: showtime.movie.title,
+				productionYear: showtime.movie.productionYear,
+				duration: showtime.movie.duration,
+				imgUrl: showtime.movie.imgUrl,
+				ageRating: showtime.movie.ageRating,
+			},
+			screen: {
+				id: showtime.screen._id,
+				name: showtime.screen.name,
+				rows: showtime.screen.rows,
+			},
+		}
+
+		res.status(200).json(formatedShowtime)
+	} catch (err) {
+		res.status(500).json({
+			message: 'There was an error fetching the showtime',
+		})
+	}
+}
+
 const createShowtime = async (req, res) => {
 	const showtime = new Showtime(req.body)
 	try {
@@ -57,4 +94,5 @@ module.exports = {
 	getAllShowtimes,
 	createShowtime,
 	updateShowtimeDates,
+	getShowtimeById,
 }
