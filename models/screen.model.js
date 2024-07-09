@@ -1,17 +1,22 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const screenSchema = new Schema(
-	{
-		name: { type: String, required: true },
-		seatsRow: { type: Number, required: true },
-		seatsCol: { type: Number, required: true },
+const SeatSchema = new Schema({
+	type: {
+		type: String,
+		enum: ['standard', 'vip', 'empty'],
+		default: 'standard',
 	},
-	{
-		timestamps: true,
-	}
-)
+})
 
-const Screen = mongoose.model('Screen', screenSchema)
+const ScreenSchema = new Schema({
+	name: { type: String, required: true },
+	rows: {
+		type: [[SeatSchema]],
+		required: true,
+	},
+})
+
+const Screen = mongoose.model('Screen', ScreenSchema)
 
 module.exports = Screen

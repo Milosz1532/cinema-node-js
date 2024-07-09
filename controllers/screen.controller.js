@@ -13,7 +13,6 @@ const getAllScreens = async (req, res) => {
 
 const createScreen = async (req, res) => {
 	const screen = new Screen(req.body)
-
 	try {
 		const newScreen = await screen.save()
 		res.status(201).json(newScreen)

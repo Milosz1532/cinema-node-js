@@ -10,12 +10,12 @@ const getMovies = async (req, res) => {
 
 		const generalMovies = await Movie.find({ ageRating: { $ne: 'KIDS' } })
 			.limit(10)
-			.select('_id title genre releaseDate imgUrl')
+			.select('_id title genre productionYear duration imgUrl')
 			.exec()
 
 		const top5Movies = await Movie.find({})
 			.limit(5)
-			.select('_id title genre releaseData imgUrl')
+			.select('_id title genre productionYear duration imgUrl')
 			.exec()
 
 		const dateToday = new Date()
@@ -50,14 +50,15 @@ const getMovies = async (req, res) => {
 				title: movie.title,
 				genre: movie.genre,
 				productionYear: movie.productionYear,
-				releaseDate: movie.releaseDate,
+				duration: movie.duration,
 				imgUrl: movie.imgUrl,
 			})),
 			top5Movies: top5Movies.map(movie => ({
 				id: movie._id,
 				title: movie.title,
 				genre: movie.genre,
-				releaseDate: movie.releaseDate,
+				duration: movie.duration,
+				productionYear: movie.productionYear,
 				imgUrl: movie.imgUrl,
 			})),
 			showtime: {

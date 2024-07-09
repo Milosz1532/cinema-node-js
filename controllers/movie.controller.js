@@ -44,6 +44,41 @@ const getMovieById = async (req, res) => {
 
 		const showtimes = await Showtime.find({ movie: id })
 
+		const todayShowtimes = []
+		const tomorrowShowtimes = []
+		const twoDaysLaterShowtimes = []
+
+		const today = new Date().toISOString().slice(0, 10)
+
+		const tomorrow = new Date()
+		tomorrow.setDate(tomorrow.getDate() + 1)
+		const tomorrowFormatted = tomorrow.toISOString().slice(0, 10)
+
+		const twoDaysLater = new Date()
+		twoDaysLater.setDate(twoDaysLater.getDate() + 2)
+		const twoDaysLaterFormatted = twoDaysLater.toISOString().slice(0, 10)
+
+		showtimes.forEach(showtime => {
+			const showtimeDate = showtime.date.toISOString().slice(0, 10)
+
+			const transformedShowtime = {
+				id: showtime._id,
+				movieId: showtime.movie,
+				screenId: showtime.screen,
+				time: showtime.time,
+				language: showtime.language,
+				movieType: showtime.movieType,
+			}
+
+			if (today === showtimeDate) {
+				todayShowtimes.push(transformedShowtime)
+			} else if (tomorrowFormatted === showtimeDate) {
+				tomorrowShowtimes.push(transformedShowtime)
+			} else if (twoDaysLaterFormatted === showtimeDate) {
+				twoDaysLaterShowtimes.push(transformedShowtime)
+			}
+		})
+
 		const transformedMovie = {
 			_id: movie._id,
 			title: movie.title,
@@ -60,7 +95,11 @@ const getMovieById = async (req, res) => {
 			trailerUrl: movie.trailerUrl,
 			createdAt: movie.createdAt,
 			updatedAt: movie.updatedAt,
-			showtimes: showtimes,
+			showtimes: {
+				today: todayShowtimes,
+				tomorrow: tomorrowShowtimes,
+				dayAfterTomorrow: twoDaysLaterShowtimes,
+			},
 			otherMovies: otherMovies.map(movie => ({
 				id: movie.id,
 				title: movie.title,
