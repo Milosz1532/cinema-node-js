@@ -75,7 +75,7 @@ const updateShowtimeDates = async (req, res) => {
 			if (index < halfLength) {
 				showtime.date = currentDate
 			} else {
-				showtime.date = tomorrowDate
+				showtime.date = tommorowDate
 			}
 			return showtime.save()
 		})

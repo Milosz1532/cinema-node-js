@@ -25,7 +25,7 @@ const getMovies = async (req, res) => {
 		dateTomorrow.setDate(dateToday.getDate() + 1)
 
 		const ShowtimeToday = await Showtime.find({
-			date: { $gte: dateToday },
+			date: { $gte: dateToday, $lt: dateTomorrow },
 		})
 			.populate('movie', 'title imgUrl genre productionYear duration')
 			.exec()
@@ -35,6 +35,19 @@ const getMovies = async (req, res) => {
 		})
 			.populate('movie', 'title imgUrl genre productionYear duration')
 			.exec()
+
+		const uniqueMovies = showtimes => {
+			const movieMap = new Map()
+			showtimes.forEach(showtime => {
+				if (!movieMap.has(showtime.movie._id.toString())) {
+					movieMap.set(showtime.movie._id.toString(), showtime)
+				}
+			})
+			return Array.from(movieMap.values())
+		}
+
+		const uniqueShowtimeToday = uniqueMovies(ShowtimeToday)
+		const uniqueShowtimeTomorrow = uniqueMovies(ShowtimeTomorrow)
 
 		const response = {
 			kidsRepertoire: kidsMovies.map(movie => ({
@@ -62,14 +75,14 @@ const getMovies = async (req, res) => {
 				imgUrl: movie.imgUrl,
 			})),
 			showtime: {
-				today: ShowtimeToday.map(showtime => ({
+				today: uniqueShowtimeToday.map(showtime => ({
 					_id: showtime._id,
-					movieId: showtime.movie.id,
+					movieId: showtime.movie._id,
 					...showtime.movie.toObject(),
 				})),
-				tomorrow: ShowtimeTomorrow.map(showtime => ({
+				tomorrow: uniqueShowtimeTomorrow.map(showtime => ({
 					_id: showtime._id,
-					movieId: showtime.movie.id,
+					movieId: showtime.movie._id,
 					...showtime.movie.toObject(),
 				})),
 			},
