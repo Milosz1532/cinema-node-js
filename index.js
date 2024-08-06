@@ -5,6 +5,7 @@ const connectDB = require('./config/database')
 const app = express()
 const path = require('path')
 const cors = require('cors')
+const cookieParser = require('cookie-parser')
 
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')))
 
@@ -14,14 +15,17 @@ const moviesRouter = require('./routes/movie.route')
 const homeRouter = require('./routes/home.route')
 const showtimeRouter = require('./routes/showtime.route')
 const screenRouter = require('./routes/screen.route')
+const authRouter = require('./routes/auth.route')
 
 //========= Middleware =========//
 app.use(express.json())
 app.use(
 	cors({
 		origin: process.env.ORIGIN,
+		credentials: true,
 	})
 )
+app.use(cookieParser())
 
 //========= Define routes =========//
 app.use('/api/actors', actorRouter)
@@ -29,6 +33,7 @@ app.use('/api/movies', moviesRouter)
 app.use('/api/home', homeRouter)
 app.use('/api/showtime', showtimeRouter)
 app.use('/api/screen', screenRouter)
+app.use('/api/auth', authRouter)
 
 connectDB()
 	.then(() => {
