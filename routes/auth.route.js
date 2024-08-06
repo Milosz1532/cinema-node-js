@@ -8,9 +8,11 @@ const {
 	loginUser,
 	validateRegister,
 	validateLogin,
+	checkAuth,
 } = require('../controllers/auth.controller')
 
-router.post('/register', guestMiddleware, validateRegister, registerUser)
-router.post('/login', guestMiddleware, validateLogin, loginUser)
+router.post('/register', validateRegister, registerUser)
+router.post('/login', validateLogin, loginUser)
+router.post('/check', checkAuth)
 
 module.exports = router

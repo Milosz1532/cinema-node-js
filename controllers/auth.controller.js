@@ -66,6 +66,26 @@ const loginUser = async (req, res) => {
 	}
 }
 
+const checkAuth = async (req, res) => {
+	try {
+		const token = req.cookies.token
+
+		if (!token) {
+			return res.status(401).json({ isLoggedIn: false })
+		}
+
+		jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+			if (err) {
+				res.clearCookie('token')
+				return res.status(401).json({ isLoggedIn: false })
+			}
+			res.status(200).json({ isLoggedIn: true })
+		})
+	} catch (err) {
+		res.status(500).json({ message: 'Internal server error' })
+	}
+}
+
 const validateRegister = [
 	body('email').isEmail().withMessage('Invalid email address'),
 	body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
@@ -79,6 +99,7 @@ const validateLogin = [
 module.exports = {
 	registerUser,
 	loginUser,
+	checkAuth,
 	validateRegister,
 	validateLogin,
 }
