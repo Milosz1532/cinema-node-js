@@ -13,6 +13,6 @@ const {
 
 router.post('/register', validateRegister, registerUser)
 router.post('/login', validateLogin, loginUser)
-router.post('/check', checkAuth)
+router.get('/check', checkAuth)
 
 module.exports = router

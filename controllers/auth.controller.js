@@ -47,7 +47,9 @@ const loginUser = async (req, res) => {
 			return res.status(400).json({ message: 'Invalid email or password' })
 		}
 
-		const token = jwt.sign({ user_id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' })
+		const token = jwt.sign({ user_id: user._id, email: user.email }, process.env.JWT_SECRET_KEY, {
+			expiresIn: '1h',
+		})
 
 		res.cookie('token', token, {
 			httpOnly: true,
@@ -79,7 +81,7 @@ const checkAuth = async (req, res) => {
 				res.clearCookie('token')
 				return res.status(401).json({ isLoggedIn: false })
 			}
-			res.status(200).json({ isLoggedIn: true })
+			res.status(200).json({ isLoggedIn: true, email: decoded.email })
 		})
 	} catch (err) {
 		res.status(500).json({ message: 'Internal server error' })

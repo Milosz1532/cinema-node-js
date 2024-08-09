@@ -16,8 +16,12 @@ const homeRouter = require('./routes/home.route')
 const showtimeRouter = require('./routes/showtime.route')
 const screenRouter = require('./routes/screen.route')
 const authRouter = require('./routes/auth.route')
+const userRouter = require('./routes/user.route')
 
 //========= Middleware =========//
+
+const authMiddleware = require('./middlewares/authMiddleware')
+
 app.use(express.json())
 app.use(
 	cors({
@@ -34,6 +38,7 @@ app.use('/api/home', homeRouter)
 app.use('/api/showtime', showtimeRouter)
 app.use('/api/screen', screenRouter)
 app.use('/api/auth', authRouter)
+app.use('/api/user', authMiddleware, userRouter)
 
 connectDB()
 	.then(() => {
